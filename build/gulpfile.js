@@ -1,6 +1,7 @@
 var gulp = require("gulp");
 var sass = require("gulp-sass");
 var rjs = require("gulp-requirejs");
+var rename = require("gulp-rename");
 
 
 // helper functions
@@ -31,7 +32,15 @@ gulp.task("copy-audio", function() {
 });
 
 gulp.task("copy-phaser", function() {
-	return gulp.src(path.root("/lib/phaser.min.js")).pipe(gulp.dest(path.dest("/media/js/")));
+	// copy phaser directly as using requirejs causes problems (probably scope related)
+	// also, it's way quicker to copy ~700KB on each build than to run it through requirejs
+	gulp.src(path.root("/lib/phaser.min.js")).pipe(rename("phaser.js")).pipe(gulp.dest(path.dest("/media/js/")));
+	gulp.src(path.root("/lib/phaser.map")).pipe(gulp.dest(path.dest("/media/js/")));
+});
+
+gulp.task("copy-phaser-debug", function() {
+	// copy phaser directly as using requirejs causes problems (probably scope related)
+	gulp.src(path.root("/lib/phaser.js")).pipe(gulp.dest(path.dest("/media/js/")));
 });
 
 gulp.task("copy-root", function() {
@@ -60,5 +69,9 @@ gulp.task("js", function() {
 
 // default task - loads sites from config and runs the tasks for the supplied site
 gulp.task("default", function() {
+	gulp.run("copy-root", "copy-images", "copy-audio", "sass", "js", "copy-phaser-debug");
+});
+
+gulp.task("live", function() {
 	gulp.run("copy-root", "copy-images", "copy-audio", "sass", "js", "copy-phaser");
 });
