@@ -34,10 +34,10 @@ Last as long as you can with score based on how many aliens you kill. Achievemen
 
 The alien stats which can be affected by weapons are:
 
-**Strength** How many survivors they kill if they get in the base.
-**Speed** How fast they move.
-**Toughness** How much damage they can take before they die.
-**Smarts** The alien's AI.
+- **Strength** How many survivors they kill if they get in the base.
+- **Speed** How fast they move.
+- **Toughness** How much damage they can take before they die.
+- **Smarts** The alien's AI.
 
 Aliens can also gain random weapons based on the chemical weapons if they mutate.
 
@@ -45,8 +45,8 @@ Aliens can also gain random weapons based on the chemical weapons if they mutate
 
 The AI has two properties which determines how it behaves. These are:
 
-**Target** What it wants. An object or point on the map.
-**Aggression** How actively it goes after its target.
+- **Target** What it wants. An object or point on the map.
+- **Aggression** How actively it goes after its target.
 
 sloth - moves aimlessly, attacks anything nearby
 hunter - goes after the player
@@ -57,12 +57,12 @@ crazy - randomly wanders and attacks
 
 Chemical weapons are built from a number of different components which can be found on the map. These are combined to form the stats of the weapon. These are:
 
-**Type** Type of attack, one of *spray*, *single shot*, *cloud*.
-**Range** How far the weapon can fire.
-**Damage** How much damage the weapon does.
-**Duration** How long the damage lasts.
-**Mutation** How likely the target is to mutate.
-**Ammo** How many shots before you run out and need to create a new weapon.
+- **Type** Type of attack, one of *spray*, *single shot*, *cloud*.
+- **Range** How far the weapon can fire.
+- **Damage** How much damage the weapon does.
+- **Duration** How long the damage lasts.
+- **Mutation** How likely the target is to mutate.
+- **Ammo** How many shots before you run out and need to create a new weapon.
 
 A weapon is built from one *Type* and two *Chemicals*.
 
@@ -70,12 +70,12 @@ A weapon is built from one *Type* and two *Chemicals*.
 
 Biological weapons (or Bugs) are built in a similar manner to chemical weapons from some of the same parts. Bug have the following stats:
 
-**Growth Rate** How quickly you can grow them.
-**Quantity** How many are grown.
-**Strength** How many aliens they kill when they get to them.
-**Speed** How fast they move.
-**Toughness** How much damage they can take before they die.
-**Smarts** The bug's AI.
+- **Growth Rate** How quickly you can grow them.
+- **Quantity** How many are grown.
+- **Strength** How many aliens they kill when they get to them.
+- **Speed** How fast they move.
+- **Toughness** How much damage they can take before they die.
+- **Smarts** The bug's AI.
 
 Bugs work in a similar manner to the aliens in that they have a target (the aliens) and they will go after them based on their AI.
 
@@ -85,9 +85,9 @@ A bug is built from two to three *Chemicals* which have a direct effect on the b
 
 The *Types* available for pick up are *gun*, *spray can* and *smoke grenade*. To cut down on required assets these shouldn't change the character animation. The differ in the following ways:
 
-**Gun** Single shot, attacks one enemy.
-**Spray Can** Cone of effect, attacks multiple enemies.
-**Smoke Grenade** Creates a cloud some distance from the player which remains for a few seconds.
+- **Gun** Single shot, attacks one enemy.
+- **Spray Can** Cone of effect, attacks multiple enemies.
+- **Smoke Grenade** Creates a cloud some distance from the player which remains for a few seconds.
 
 The type will also have an impact on the weapon's range.
 
@@ -95,17 +95,17 @@ The type will also have an impact on the weapon's range.
 
 Chemicals are used to create weapons and bugs and have the following stats, depending on how they're used:
 
-**Range (weapon)** How far the weapon can fire.
-**Damage (weapon)** How much damage the weapon does.
-**Duration (weapon)** How long the damage lasts.
-**Mutation (weapon)** How likely the target is to mutate.
-**Ammo (weapon)** How many shots before you run out and need to create a new weapon.
-**Growth Rate (bug)** How quickly you can grow them.
-**Quantity (bug)** How many are grown.
-**Strength (bug)** How many aliens they kill when they get to them.
-**Speed (bug)** How fast they move.
-**Toughness (bug)** How much damage they can take before they die.
-**Smarts (bug)** The bug's AI.
+- **Range (weapon)** How far the weapon can fire.
+- **Damage (weapon)** How much damage the weapon does.
+- **Duration (weapon)** How long the damage lasts.
+- **Mutation (weapon)** How likely the target is to mutate.
+- **Ammo (weapon)** How many shots before you run out and need to create a new weapon.
+- **Growth Rate (bug)** How quickly you can grow them.
+- **Quantity (bug)** How many are grown.
+- **Strength (bug)** How many aliens they kill when they get to them.
+- **Speed (bug)** How fast they move.
+- **Toughness (bug)** How much damage they can take before they die.
+- **Smarts (bug)** The bug's AI.
 
 The number of chemicals should be quite restricted (say six) just to keep it simple to play and simple to build. Chemical data will be store in a JSON object.
 
@@ -113,8 +113,8 @@ The number of chemicals should be quite restricted (say six) just to keep it sim
 
 The player has a fixed movement speed with attack based on the *Chemical Weapon* they're carrying. If they don't have a weapon they can't attack. Players have two stats which may change during the course of the game:
 
-**Toughness** How much damage s/he can take before dying.
-**Civilians** The civilian population remaining.
+- **Toughness** How much damage s/he can take before dying.
+- **Civilians** The civilian population remaining.
 
 If the players dies (*Toughness* is zero) then the player respawns in the civilian base with no weapons.
 

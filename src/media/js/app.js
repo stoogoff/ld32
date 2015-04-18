@@ -1,11 +1,12 @@
 
 define(function(require) {
 	// Phaser is going to be global
-	var game = new Phaser.Game(600, 800, Phaser.AUTO, 'ld29');
+	var game = new Phaser.Game(800, 800, Phaser.AUTO, "ABC Worriers");
 
 	// Game States
-	//game.state.add('boot', require('./states/boot'));
+	game.state.add("preload", require("./screens/preload"));
+	game.state.add("play", require("./screens/game-play"));
 
-	//game.state.start('boot');
-	alert("Here");
+	game.state.start("preload");
+
 });
