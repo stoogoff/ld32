@@ -149,6 +149,8 @@ If the civilians are wiped out then its game over.
 
 ## Graphics
 
+Character sizes should be based on 16x16 pixels as the player and aliens, with 8x8 for the bugs.
+
 - Player
 	- Moving animation
 - Aliens (3?)
@@ -156,9 +158,12 @@ If the civilians are wiped out then its game over.
 - The labs
 - Bugs
 	- Moving animation
-- Pick ups (these could just be a simple with differing colours)
+- Pick ups (these could just be a simple icon with differing colours)
 	- Weapon types x3
 	- Chemicals
+- Walls
+- Random background stuff
+- Entry points for the aliens
 
 ## Sound Effects
 
