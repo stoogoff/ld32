@@ -9,7 +9,7 @@ define(function(require) {
 			var self = this;
 
 			// load graphics
-			var keys = ["alien", "player", "lab", "gun", "bomb", "spray"];
+			var keys = ["alien", "player", "lab", "gun", "bomb", "spray", "status"];
 
 			keys.forEach(function(key) {
 				self.load.image(key, "media/img/" + key + ".png");

@@ -1,7 +1,7 @@
 
 # TODO List
 
-- Basic graphics
+- DONE Basic graphics
 - Basic gameplay
 	- DONE Player movement and camera
 	- DONE Labs
@@ -15,6 +15,9 @@
 		- DONE Weapon Types
 		- Chemicals
 	- HUD
+		- DONE Power bars
+		- Icons
+		- DONE Inventory
 	- Build screens
 	- Player weapons
 		- Create weapons

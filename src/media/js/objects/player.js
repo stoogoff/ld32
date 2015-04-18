@@ -8,8 +8,9 @@ define(function(require) {
 
 	var Player = function(game, x, y, frame) {
 		this.data = {
-			toughness: 0,
-			civilians: 0,
+			toughness: 100,
+			civilians: 100,
+			atomBomb: 0,
 			weapon: null,
 			inventory: []
 		};
@@ -57,13 +58,15 @@ define(function(require) {
 	};
 
 	Player.prototype.addInventoryItem = function(sprite) {
+		sprite = sprite.data;
+
 		if(_.contains(this.data.inventory, sprite)) {
-			return;
+			return false;
 		}
 
-		sprite.body = null;
-
 		this.data.inventory.push(sprite);
+
+		return true;
 	};
 
 	Player.prototype.fire = function() {

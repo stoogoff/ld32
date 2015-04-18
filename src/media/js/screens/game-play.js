@@ -5,13 +5,17 @@ define(function(require) {
 	var Alien = require("../objects/alien");
 	var Labs = require("../objects/lab");
 	var Collectables = require("../objects/collectables");
-	var WeaponType = require("../objects/weapon-type");
+	var StatusBar = require("../objects/status-bar");
+	var Inventory = require("../objects/inventory");
 
 	// helper imports
 	var constants = require("../utils/constants");
 	var helpers = require("../utils/helpers");
 
 	var player, labs, collectable;
+
+	// HUD elemenys
+	var health, civilians, aBomb, bugs, inventory;
 
 	var GamePlay = function() {
 		Phaser.State.call(this);
@@ -59,6 +63,14 @@ define(function(require) {
 		player = new Player(this.game, x, y);
 		this.game.camera.follow(player);
 
+		// HUD
+		inventory = new Inventory(this.game, 790, 790);
+		health = new StatusBar(this.game, 640, 10, 150, 15, player, "toughness");
+		civilians = new StatusBar(this.game, 640, 30, 150, 15, player, "civilians");
+		aBomb = new StatusBar(this.game, 10, 10, 150, 15, player, "atomBomb");
+		bugs = new StatusBar(this.game, 10, 30, 150, 15, player, "bugs");
+
+		bugs.hide();
 
 		collectables = new Collectables(this.game);
 		collectables.addGun(250, 350);
@@ -99,14 +111,14 @@ define(function(require) {
 
 
 	GamePlay.prototype.collectableCollision = function(player, object) {
-		player.addInventoryItem(object);
-		console.log(player.data.inventory.length)
-
-		collectables.removeChild(object);
+		if(player.addInventoryItem(object)) {
+			collectables.removeChild(object);
+			inventory.addInventoryItem(object.key);
+		}
 	};
 
 	GamePlay.prototype.render = function() {
-		this.game.debug.cameraInfo(this.game.camera, 32, 32);
+		//this.game.debug.cameraInfo(this.game.camera, 32, 32);
 		//this.game.debug.spriteCoords(this.inventory.getAt(0), 32, 750);
 	};
 

@@ -109,6 +109,12 @@ Chemicals are used to create weapons and bugs and have the following stats, depe
 
 The number of chemicals should be quite restricted (say six) just to keep it simple to play and simple to build. Chemical data will be store in a JSON object.
 
+### Chemicals Names
+
+- Triffidium
+- Balonium
+
+
 ## Player Stats
 
 The player has a fixed movement speed with attack based on the *Chemical Weapon* they're carrying. If they don't have a weapon they can't attack. Players have two stats which may change during the course of the game:
@@ -153,6 +159,10 @@ Character sizes should be based on 16x16 pixels as the player and aliens, with 8
 
 - Player
 	- Moving animation
+	- Weapons firing
+		- Bullet
+		- Spray
+		- Cloud
 - Aliens (3?)
 	- Moving animation
 - The labs
