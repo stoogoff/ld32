@@ -12,13 +12,14 @@ define(function(require) {
 		// default AI stuff
 		var target     = mutation["target"] || null;
 		var aggression = mutation["aggression"] || 0.5;
+		var distance = mutation["distance"] || false;
 
 		// default stats plus any mutation stuff
 		this.data = {
 			strength  : 10  + (mutation["strength"]  || 0),
 			speed     : 300 + (mutation["speed"]     || 0),
 			toughness : 10  + (mutation["toughness"] || 0),
-			smarts    : new AI(aggression, target)
+			smarts    : new AI(aggression, target, distance)
 		};
 
 		// TODO weapon types will come in later

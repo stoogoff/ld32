@@ -13,10 +13,7 @@ define(function(require) {
 		// phaser related stuff
 		Phaser.Sprite.call(this, game, x, y, "lab");
 
-		//game.physics.arcade.enable(this);
-
 		this.anchor.setTo(0.5, 0.5);
-		//this.body.immovable = true;
 
 		game.add.existing(this);
 	};

@@ -23,12 +23,10 @@ gulp.task("sass", function() {
 	return gulp.src(path.src("/media/css/*.sass")).pipe(sass({ indentedSyntax: true })).pipe(gulp.dest(path.dest("/media/css/")));
 });
 
-gulp.task("copy-images", function() {
-	return gulp.src(path.src("/media/img/**")).pipe(gulp.dest(path.dest("/media/img/")));
-});
-
-gulp.task("copy-audio", function() {
-	return gulp.src(path.src("/media/audio/**")).pipe(gulp.dest(path.dest("/media/audio/")));
+gulp.task("copy-static", function() {
+	["img", "audio", "data"].forEach(function(key) {
+		gulp.src(path.src("/media/" + key + "/**")).pipe(gulp.dest(path.dest("/media/" + key + "/")));
+	});
 });
 
 gulp.task("copy-phaser", function() {
@@ -69,9 +67,9 @@ gulp.task("js", function() {
 
 // default task - loads sites from config and runs the tasks for the supplied site
 gulp.task("default", function() {
-	gulp.run("copy-root", "copy-images", "copy-audio", "sass", "js", "copy-phaser-debug");
+	gulp.run("copy-root", "copy-static", "sass", "js", "copy-phaser-debug");
 });
 
 gulp.task("live", function() {
-	gulp.run("copy-root", "copy-images", "copy-audio", "sass", "js", "copy-phaser");
+	gulp.run("copy-root", "copy-static", "sass", "js", "copy-phaser");
 });

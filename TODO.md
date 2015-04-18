@@ -5,17 +5,24 @@
 - Basic gameplay
 	- DONE Player movement and camera
 	- DONE Labs
-	- AI
+	- DONE AI
 		- DONE Movement
 		- DONE Targetting
-		- Retargetting after success
-		- Aliens
+		- DONE Retargetting after success
+		- DONE Aliens
 	- Pickups
-		- Inventory
+		- DONE Inventory
+		- DONE Weapon Types
+		- Chemicals
 	- HUD
 	- Build screens
 	- Player weapons
+		- Create weapons
 		- Different attack types
 		- Alien combat
+	- Bugs
+		- Create
+		- AI
+	- Swarm and spawning
 - Real graphics and animations
 - Come up with chemical types and properties

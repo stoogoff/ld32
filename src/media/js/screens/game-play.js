@@ -1,16 +1,17 @@
 
 define(function(require) {
+	// object imports
 	var Player = require("../objects/player");
 	var Alien = require("../objects/alien");
-	var LabGroup = require("../objects/lab");
+	var Labs = require("../objects/lab");
+	var Collectables = require("../objects/collectables");
+	var WeaponType = require("../objects/weapon-type");
+
+	// helper imports
 	var constants = require("../utils/constants");
+	var helpers = require("../utils/helpers");
 
-	var player, labs;
-	var alien;
-
-	function isLab(target) {
-		return target === constants.ATOMIC || target === constants.BIOLOGICAL || target === constants.CHEMICAL || target === constants.CIVILIAN;
-	}
+	var player, labs, collectable;
 
 	var GamePlay = function() {
 		Phaser.State.call(this);
@@ -30,7 +31,7 @@ define(function(require) {
 				return player;
 			}
 
-			if(isLab(target)) {
+			if(helpers.isLab(target)) {
 				var lab = null;
 
 				labs.forEach(function(l) {
@@ -42,6 +43,8 @@ define(function(require) {
 				return lab;
 			}
 
+			// TODO add alien look up
+
 			return null;
 		};
 
@@ -49,17 +52,24 @@ define(function(require) {
 		var y = this.game.world.centerY;
 
 		// set up the labs
-		labs = new LabGroup(this.game);
+		labs = new Labs(this.game);
 		labs.createLabs(x, y);
 
 		// set up the player
 		player = new Player(this.game, x, y);
 		this.game.camera.follow(player);
 
-		var aliens = [
+
+		collectables = new Collectables(this.game);
+		collectables.addGun(250, 350);
+		collectables.addSpray(300, 350);
+		collectables.addBomb(350, 350);
+
+		/*var aliens = [
 			new Alien(this.game, x - 300, y - 100, {
 				target: constants.PLAYER,
-				aggression: 1
+				aggression: 0.5,
+				distance: 200
 			}),
 			new Alien(this.game, x - 300, y - 100, {
 				target: constants.CIVILIAN
@@ -71,7 +81,7 @@ define(function(require) {
 				target: null
 			}),
 			new Alien(this.game, x - 300, y - 100)
-		];
+		];*/
 
 	};
 
@@ -82,11 +92,22 @@ define(function(require) {
 				console.log("player is in lab " + lab.data.type);
 			}
 		});
+
+		// handle collisions for pick ups
+		this.game.physics.arcade.collide(player, collectables, this.collectableCollision, null, this);
+	};
+
+
+	GamePlay.prototype.collectableCollision = function(player, object) {
+		player.addInventoryItem(object);
+		console.log(player.data.inventory.length)
+
+		collectables.removeChild(object);
 	};
 
 	GamePlay.prototype.render = function() {
 		this.game.debug.cameraInfo(this.game.camera, 32, 32);
-		//this.game.debug.spriteCoords(alien, 32, 750);
+		//this.game.debug.spriteCoords(this.inventory.getAt(0), 32, 750);
 	};
 
 	return GamePlay;

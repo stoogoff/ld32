@@ -6,10 +6,17 @@ define(function(require) {
 
 	Preload.prototype = {
 		preload: function() {
-			this.load.image("player", "media/img/player.png");
-			this.load.image("alien", "media/img/alien.png");
-			this.load.image("bg", "media/img/bg.png");
-			this.load.image("lab", "media/img/lab.png");
+			var self = this;
+
+			// load graphics
+			var keys = ["alien", "player", "lab", "gun", "bomb", "spray"];
+
+			keys.forEach(function(key) {
+				self.load.image(key, "media/img/" + key + ".png");
+			});
+
+			// load json data
+			this.load.json("objects", "media/data/objects.json");
 		},
 		create: function() {
 			this.game.state.start("play");

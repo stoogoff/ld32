@@ -7,20 +7,22 @@ define(function(require) {
 	var Chemical = function(game, x, y, data) {
 		// TODO - sensible defaults
 
-		// weapon properties
-		this.range    = data["range"]    || 0;
-		this.damage   = data["damage"]   || 0;
-		this.duration = data["duration"] || 0;
-		this.mutation = data["mutation"] || 0;
-		this.ammo     = data["ammo"]     || 0;
+		this.data = {
+			// weapon properties
+			range    : data["range"]    || 0,
+			damage   : data["damage"]   || 0,
+			duration : data["duration"] || 0,
+			mutation : data["mutation"] || 0,
+			ammo     : data["ammo"]     || 0,
 
-		// bug properties
-		this.growth    = data["growth"]    || 0;
-		this.quantity  = data["quantity"]  || 0;
-		this.strength  = data["strength"]  || 0;
-		this.speed     = data["speed"]     || 0;
-		this.toughness = data["toughness"] || 0;
-		this.smarts    = data["smarts"]    || 0;
+			// bug properties
+			growth    : data["growth"]    || 0,
+			quantity  : data["quantity"]  || 0,
+			strength  : data["strength"]  || 0,
+			speed     : data["speed"]     || 0,
+			toughness : data["toughness"] || 0,
+			smarts    : data["smarts"]    || 0
+		};
 
 		// image to use will come from data
 		this.image = data["image"];
@@ -28,7 +30,10 @@ define(function(require) {
 		// phaser related stuff
 		Phaser.Sprite.call(this, game, x, y, this.image);
 
-		game.physics.enable(this, Phaser.Physics.ARCADE);
+		game.physics.arcade.enable(this);
+		game.add.existing(this);
+
+		this.anchor.setTo(0.5, 0.5);
 	};
 
 	inherits(Chemical, Phaser.Sprite);

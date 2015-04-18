@@ -1,6 +1,7 @@
 define(function(require) {
 	// imports
 	var inherits = require("../utils/inherits");
+	var _ = require("underscore");
 
 	// module vars
 	var cursors = null, SPEED = 500;
@@ -9,7 +10,8 @@ define(function(require) {
 		this.data = {
 			toughness: 0,
 			civilians: 0,
-			weapon: null
+			weapon: null,
+			inventory: []
 		};
 
 		// phaser related stuff
@@ -52,6 +54,16 @@ define(function(require) {
 		else if(cursors.down.isDown) {
 			this.body.velocity.y = SPEED;
 		}
+	};
+
+	Player.prototype.addInventoryItem = function(sprite) {
+		if(_.contains(this.data.inventory, sprite)) {
+			return;
+		}
+
+		sprite.body = null;
+
+		this.data.inventory.push(sprite);
 	};
 
 	Player.prototype.fire = function() {

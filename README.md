@@ -83,11 +83,11 @@ A bug is built from two to three *Chemicals* which have a direct effect on the b
 
 ## Types
 
-The *Types* available for pick up are *gun*, *spray can* and *smoke grenade*. To cut down on required assets these shouldn't change the character animation. The differ in the following ways:
+The *Types* available for pick up are *gun*, *spray can* and *bomb*. To cut down on required assets these shouldn't change the character animation. The differ in the following ways:
 
 - **Gun** Single shot, attacks one enemy.
 - **Spray Can** Cone of effect, attacks multiple enemies.
-- **Smoke Grenade** Creates a cloud some distance from the player which remains for a few seconds.
+- **Bomb** Creates a cloud a short distance from the player which remains for a few seconds.
 
 The type will also have an impact on the weapon's range.
 
