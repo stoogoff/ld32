@@ -159,21 +159,71 @@ Character sizes should be based on 16x16 pixels as the player and aliens, with 8
 
 - Player
 	- Moving animation
+		- Standing
+		- Walking x (2x frames)
+		- Walking down (2x frames)
+		- Walking up (2x frames)
+	- Moving with weapon animation
+		- Standing
+		- Walking x (2x frames)
+		- Walking down (2x frames)
+		- Walking up (2x frames)
 	- Weapons firing
 		- Bullet
 		- Spray
 		- Cloud
 - Aliens (3?)
 	- Moving animation
+		- Walking x (2x frames)
+		- Walking down (2x frames)
+		- Walking up (2x frames)
 - The labs
+	- Rocket
+	- Flask
+	- Person
+	- Lightning
 - Bugs
 	- Moving animation
+		- Walking x (2x frames)
+		- Walking down (2x frames)
+		- Walking up (2x frames)
 - Pick ups (these could just be a simple icon with differing colours)
-	- Weapon types x3
-	- Chemicals
-- Walls
+	- Weapon types
+		- gun
+		- spray can
+		- bomb
+	- Chemicals (6x could be the same but different colours)
+- HUD
+	- Rocket
+	- Heart
+	- Person
+	- Weapon type (see above)
 - Random background stuff
 - Entry points for the aliens
+- Large versions of all icons
+
+
+Rocket - blue
+	24px HUD
+	32px Base
+Flask - green
+	32px Base
+	16px icon (different colours)
+Person - grey
+	32px Base
+	24px HUD
+Lightning - yellow
+	32px Base
+	24px HUD
+Heart - red
+	24px HUD
+Bomb - grey
+	16px icon
+Bullhorn - grey
+	16px icon
+Fire extinguisher - grey
+	16px icon
+
 
 ## Sound Effects
 

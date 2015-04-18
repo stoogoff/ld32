@@ -4,7 +4,7 @@ define(function(require) {
 	var _ = require("underscore");
 
 	// module vars
-	var cursors = null, SPEED = 500;
+	var SPEED = 500;
 
 	var Player = function(game, x, y, frame) {
 		this.data = {
@@ -24,37 +24,13 @@ define(function(require) {
 
 		this.body.collideWorldBounds = true;
 		this.anchor.setTo(0.5, 0.5);
-
-		// set up player controls
-		cursors = game.input.keyboard.createCursorKeys();
 	};
 
 	inherits(Player, Phaser.Sprite);
 
-	// move the player
-	Player.prototype.update = function() {
-		this.move();
-
-		// fire
-	};
-
-	Player.prototype.move = function() {
-		this.body.velocity.x = 0;
-		this.body.velocity.y = 0;
-
-		if(cursors.left.isDown) {
-			this.body.velocity.x = -SPEED;
-		}
-		else if(cursors.right.isDown) {
-			this.body.velocity.x = SPEED;
-		}
-
-		if(cursors.up.isDown) {
-			this.body.velocity.y = -SPEED;
-		}
-		else if(cursors.down.isDown) {
-			this.body.velocity.y = SPEED;
-		}
+	Player.prototype.move = function(vector) {
+		this.body.velocity.x = vector.x * SPEED;
+		this.body.velocity.y = vector.y * SPEED;
 	};
 
 	Player.prototype.addInventoryItem = function(sprite) {
@@ -67,6 +43,18 @@ define(function(require) {
 		this.data.inventory.push(sprite);
 
 		return true;
+	};
+
+	Player.prototype.removeInventoryItem = function(sprite) {
+		sprite = sprite.data;
+
+		if(_.contains(this.data.inventory, sprite)) {
+			this.data.inventory = _.without(this.data.inventory, sprite);
+
+			return true;
+		}
+
+		return false;
 	};
 
 	Player.prototype.fire = function() {

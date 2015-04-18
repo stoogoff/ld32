@@ -12,7 +12,11 @@ define(function(require) {
 	var constants = require("../utils/constants");
 	var helpers = require("../utils/helpers");
 
+	// objects
 	var player, labs, collectable;
+
+	// keyboard
+	var cursors, fire, activate;
 
 	// HUD elemenys
 	var health, civilians, aBomb, bugs, inventory;
@@ -65,19 +69,28 @@ define(function(require) {
 
 		// HUD
 		inventory = new Inventory(this.game, 790, 790);
-		health = new StatusBar(this.game, 640, 10, 150, 15, player, "toughness");
-		civilians = new StatusBar(this.game, 640, 30, 150, 15, player, "civilians");
-		aBomb = new StatusBar(this.game, 10, 10, 150, 15, player, "atomBomb");
-		bugs = new StatusBar(this.game, 10, 30, 150, 15, player, "bugs");
+		health    = new StatusBar(this.game, 640, 15, player, "toughness", "heart", constants.BAD_COLOUR);
+		civilians = new StatusBar(this.game, 640, 40, player, "civilians", "person", constants.BAD_COLOUR);
+		aBomb     = new StatusBar(this.game, 20, 15, player, "atomBomb", "rocket", constants.GOOD_COLOUR, 100);
+		bugs      = new StatusBar(this.game, 20, 40, player, "bugs", "lightning", constants.GOOD_COLOUR, 100);
 
 		bugs.hide();
 
 		collectables = new Collectables(this.game);
-		collectables.addGun(250, 350);
-		collectables.addSpray(300, 350);
-		collectables.addBomb(350, 350);
 
-		/*var aliens = [
+		// this needs to happen on a timer
+		collectables.addRandomWeapon();
+		//collectables.addGun();
+		//collectables.addSpray();
+		//collectables.addBomb();
+
+		// as does this
+		for(var i = 0; i < 10; ++i) {
+			collectables.addRandomChemical();
+		}
+
+		// alien tests
+		var aliens = [
 			new Alien(this.game, x - 300, y - 100, {
 				target: constants.PLAYER,
 				aggression: 0.5,
@@ -93,17 +106,53 @@ define(function(require) {
 				target: null
 			}),
 			new Alien(this.game, x - 300, y - 100)
-		];*/
+		];
 
+
+		// set up player controls
+		cursors  = this.game.input.keyboard.createCursorKeys();
+		fire     = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+		activate = this.game.input.keyboard.addKey(Phaser.Keyboard.B);
+
+		this.pause = false;
 	};
 
 	GamePlay.prototype.update = function() {
-		// see if the play is in a lab
-		labs.forEach(function(lab) {
-			if(lab.overlap(player)) {
-				console.log("player is in lab " + lab.data.type);
-			}
-		});
+		if(this.pause) {
+			return;
+		}
+
+		// handle player movement
+		var vector = new Phaser.Point();
+
+		if(cursors.left.isDown) {
+			vector.x = -1;
+		}
+		else if(cursors.right.isDown) {
+			vector.x = 1;
+		}
+
+		if(cursors.up.isDown) {
+			vector.y = -1;
+		}
+		else if(cursors.down.isDown) {
+			vector.y = 1;
+		}
+
+		player.move(vector);
+
+		if(fire.isDown) {
+			console.log("firing")
+		}
+
+		if(activate.isDown) {
+			// see if the play is in a lab
+			labs.forEach(function(lab) {
+				if(lab.overlap(player)) {
+					lab.activate(this, player);
+				}
+			}.bind(this));
+		}
 
 		// handle collisions for pick ups
 		this.game.physics.arcade.collide(player, collectables, this.collectableCollision, null, this);

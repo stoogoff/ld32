@@ -2,10 +2,14 @@
 define(function(require) {
 	// imports
 	var inherits = require("../utils/inherits");
+	var constants = require("../utils/constants");
 
 	// TODO add icon
 	// TODO add possibility to set colour
-	var StatusBar = function(game, x, y, width, height, owner, stat, colour) {
+	var StatusBar = function(game, x, y, owner, stat, icon, colour, maxValue) {
+		var width = 150;
+		var height = 15;
+
 		Phaser.TileSprite.call(this, game, x, y, width, height, "status");
 
 		this.fixedToCamera = true;
@@ -16,7 +20,7 @@ define(function(require) {
 
 		this.owner = owner;
 		this.stat = stat;
-		this.maxValue = this.owner.data[this.stat];
+		this.maxValue = maxValue || this.owner.data[this.stat];
 		this.rectangle = new Phaser.Rectangle(x, y, width, height);
 
 		var fill = game.add.bitmapData(width, height);
@@ -30,8 +34,8 @@ define(function(require) {
 
 		outline.context.beginPath();
 		outline.context.rect(0, 0, width, height);
-		outline.context.strokeStyle = "#222";
-		outline.context.lineWidth = 3;
+		outline.context.strokeStyle = constants.BORDER_COLOUR;
+		outline.context.lineWidth = constants.BORDER_WIDTH;
 		outline.context.stroke();
 
 		this.bar = game.add.sprite(x, y, fill);
@@ -39,6 +43,10 @@ define(function(require) {
 
 		this.border = game.add.sprite(x, y, outline);
 		this.border.fixedToCamera = true;
+
+		this.icon = game.add.sprite(x - 10, y - 5, icon);
+		this.icon.fixedToCamera = true;
+		this.icon.scale = new Phaser.Point(0.7, 0.7);
 	};
 
 	inherits(StatusBar, Phaser.TileSprite);
@@ -53,11 +61,11 @@ define(function(require) {
 	};
 
 	StatusBar.prototype.hide = function() {
-		this.visible = this.bar.visible = this.border.visible = false;
+		this.visible = this.icon.visible = this.bar.visible = this.border.visible = false;
 	};
 
 	StatusBar.prototype.show = function() {
-		this.visible = this.bar.visible = this.border.visible = true;
+		this.visible = this.icon.visible = this.bar.visible = this.border.visible = true;
 	};
 
 	return StatusBar;

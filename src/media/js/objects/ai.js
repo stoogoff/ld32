@@ -39,7 +39,7 @@ define(function(require) {
 		// the target is not an object
 		else {
 			// the target is a point
-			if(this.target.constructor !== String) {
+			if(this.target && this.target.constructor !== String) {
 				target = this.target;
 			}
 			// a random target has been set

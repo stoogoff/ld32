@@ -2,8 +2,8 @@
 define(function(require) {
 	// imports
 	var inherits = require("../utils/inherits");
-	
-	var PAD = 6;
+	var constants = require("../utils/constants");
+
 
 	var InventoryItem = function(game, x, y, image) {
 		Phaser.Sprite.call(this, game, x, y, image);
@@ -11,15 +11,26 @@ define(function(require) {
 		this.fixedToCamera = true;
 		this.anchor.setTo(1, 1);
 
-		var outline = game.add.bitmapData(this.width + PAD, this.height + PAD);
+		var fill = game.add.bitmapData(this.width + constants.BORDER_WIDTH * 2, this.height + constants.BORDER_WIDTH * 2);
+
+		fill.context.fillStyle = constants.INVENTORY_COLOUR;
+		fill.context.beginPath();
+		fill.context.rect(0, 0, this.width + constants.BORDER_WIDTH * 2, this.height + constants.BORDER_WIDTH * 2);
+		fill.context.fill();
+
+		this.fill = game.add.sprite(x + constants.BORDER_WIDTH / 2, y + constants.BORDER_WIDTH / 2, fill);
+		this.fill.anchor.setTo(1, 1);
+		this.fill.fixedToCamera = true;
+
+		var outline = game.add.bitmapData(this.width + constants.BORDER_WIDTH * 2, this.height + constants.BORDER_WIDTH * 2);
 
 		outline.context.beginPath();
-		outline.context.rect(0, 0, this.width + PAD, this.height + PAD);
-		outline.context.strokeStyle = "#222";
-		outline.context.lineWidth = PAD;
+		outline.context.rect(0, 0, this.width + constants.BORDER_WIDTH * 2, this.height + constants.BORDER_WIDTH * 2);
+		outline.context.strokeStyle = constants.BORDER_COLOUR;
+		outline.context.lineWidth = constants.BORDER_WIDTH;
 		outline.context.stroke();
 
-		this.border = game.add.sprite(x + PAD / 2, y + PAD / 2, outline);
+		this.border = game.add.sprite(x + constants.BORDER_WIDTH / 2, y + constants.BORDER_WIDTH / 2, outline);
 		this.border.anchor.setTo(1, 1);
 		this.border.fixedToCamera = true;
 	};
@@ -42,17 +53,21 @@ define(function(require) {
 	Inventory.prototype.addInventoryItem = function(image) {
 		var item = new InventoryItem(this.game, this.childX, this.childY, image);
 
+		this.add(item.fill);
 		this.add(item);
 		this.add(item.border);
-		this.childX -= item.width + PAD / 2;
+		this.childX -= item.width + constants.BORDER_WIDTH;
 
-		if(++this.grid > 10) {
+		if(++this.grid >= 5) {
 			this.grid = 0;
-			this.childY -= item.height + PAD / 2;
+			this.childX = 0;
+			this.childY -= item.height + constants.BORDER_WIDTH;
 		}
 	};
 
-	// TODO remove inventory item
+	Inventory.prototype.removeInventoryItem = function(image) {
+		// TODO remove inventory item
+	};
 
 	return Inventory;
 });

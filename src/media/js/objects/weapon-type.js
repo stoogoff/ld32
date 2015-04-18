@@ -5,17 +5,17 @@ define(function(require) {
 	var constants = require("../utils/constants");
 
 	var GunType = function() {
-		this.image = "gun";
+		this.image = "weapon-gun";
 		this.range = 0;
 		this.duration = 0;
 	};
 	var SprayType = function() {
-		this.image = "spray";
+		this.image = "weapon-spray";
 		this.range = 0;
 		this.duration = 0;
 	};
 	var BombType = function() {
-		this.image = "bomb";
+		this.image = "weapon-bomb";
 		this.range = 0;
 		this.duration = 0;
 	};
