@@ -30,9 +30,12 @@ define(function(require) {
 
 			// load json data
 			this.load.json("objects", "media/data/objects.json");
+
+			// load audio
+			this.load.audio("doom-upon-us", ["media/audio/doom-upon-us.mp3", "media/audio/doom-upon-us.ogg"]);
 		},
 		create: function() {
-			this.game.state.start("play");
+			this.game.state.start("menu");
 		}
 	};
 

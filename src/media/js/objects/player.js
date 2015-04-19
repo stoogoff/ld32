@@ -49,6 +49,10 @@ define(function(require) {
 		}
 	};
 
+	Player.prototype.isDead = function() {
+		return this.data.toughness <= 0;
+	};
+
 	Player.prototype.addInventoryItem = function(sprite) {
 		// full up!
 		if(this.data.inventory.length >= MAX_CARRY) {

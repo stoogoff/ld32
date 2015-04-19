@@ -126,28 +126,27 @@ define(function(require) {
 			return;
 		}
 
-		// handle player movement
-		var vector = new Phaser.Point();
+		// if the player is invisible they're dead, ignore their movement
+		if(!player.isDead()) {
+			// handle player movement
+			var vector = new Phaser.Point();
 
-		if(cursors.left.isDown) {
-			vector.x = -1;
-		}
-		else if(cursors.right.isDown) {
-			vector.x = 1;
-		}
+			if(cursors.left.isDown) {
+				vector.x = -1;
+			}
+			else if(cursors.right.isDown) {
+				vector.x = 1;
+			}
 
-		if(cursors.up.isDown) {
-			vector.y = -1;
-		}
-		else if(cursors.down.isDown) {
-			vector.y = 1;
-		}
+			if(cursors.up.isDown) {
+				vector.y = -1;
+			}
+			else if(cursors.down.isDown) {
+				vector.y = 1;
+			}
 
-		player.move(vector);
-
-		/*if(fire.isDown) {
-			console.log("firing")
-		}*/
+			player.move(vector);
+		}
 
 		// handle collisions for pick ups
 		collectables.collision(player, this.playersVsCollectable, this);
@@ -161,7 +160,7 @@ define(function(require) {
 		// if the activate button isn't used (e.g. civilian lab) then the player can fire
 		labs.forEach(function(lab) {
 			// see if the play is in a lab
-			if(activate.isDown) {
+			if(!player.isDead() && activate.isDown) {
 				if(lab.overlap(player)) {
 					if(lab.isAtomic() && bomb.isReady()) {
 						bomb.fire(collectables, aliens);
@@ -193,11 +192,30 @@ define(function(require) {
 		}.bind(this));
 
 		// a useful activate hasn't happened so fire
-		if(activate.isDown && !hasActivated) {
-			console.log("FIRE!")
+		if(!player.isDead() && activate.isDown && !hasActivated) {
+			console.log("FIRE!");
 		}
 
 		// TODO bugs vs aliens
+
+		// check to see if the player is dead
+		if(player.isDead()) {
+			// TODO death scene
+			player.visible = false;
+
+			// respawn in the civilian lab
+			labs.forEach(function(lab) {
+				if(lab.isCivilian()) {
+					player.x = lab.x;
+					player.y = lab.y;
+
+					this.game.time.events.add(1000, function() {
+						player.visible = true;
+						player.data.toughness = 100;
+					});
+				}
+			}.bind(this));
+		}
 	};
 
 

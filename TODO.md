@@ -18,7 +18,7 @@
 		- DONE Power bars
 		- DONE Icons
 		- DONE Inventory
-	- Build screens
+	- DONE Build screens
 	- Player weapons
 		- Create weapons
 		- Different attack types
@@ -35,9 +35,9 @@
 - Nuclear attack
 	- DONE Object destruction
 	- Alien mutation
-- Music
+- DONE Music
 - Sounds effects
 - Other screens
-	- Menu
+	- DONE Menu
 	- Game over
 - Diagonal movement for player and possibly bugs and aliens
