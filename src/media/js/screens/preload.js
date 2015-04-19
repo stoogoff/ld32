@@ -10,8 +10,7 @@ define(function(require) {
 
 			// load graphics
 			var keys = [
-				"background",
-				"alien",
+				"background", "cave",
 				"lab-atomic", "lab-biological", "lab-chemical", "lab-civilian",
 				"weapon-gun", "weapon-bomb", "weapon-spray",
 				"flask-blue", "flask-green", "flask-orange", "flask-pink", "flask-purple", "flask-red",
@@ -22,7 +21,9 @@ define(function(require) {
 			});
 
 			// animations
+			this.load.spritesheet("alien", "media/img/alien.png", 24, 24);
 			this.load.spritesheet("player", "media/img/player.png", 32, 32);
+			this.load.spritesheet("bug", "media/img/bug.png", 18, 12);
 
 			// load json data
 			this.load.json("objects", "media/data/objects.json");

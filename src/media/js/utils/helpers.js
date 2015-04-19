@@ -24,6 +24,33 @@ define(function(require) {
 		// return true if the target is a lab
 		isLab: function(target) {
 			return target === constants.ATOMIC || target === constants.BIOLOGICAL || target === constants.CHEMICAL || target === constants.CIVILIAN;
+		},
+
+		isWeapon: function(target) {
+			return target === constants.GUN || target === constants.BOMB || target === constants.SPRAY;
+		},
+
+		createSolid: function(game, width, height, colour) {
+			var fill = game.add.bitmapData(width, height);
+
+			fill.context.fillStyle = colour;
+			fill.context.beginPath();
+			fill.context.rect(0, 0, width, height);
+			fill.context.fill();
+
+			return fill;
+		},
+
+		createOutline: function(game, width, height, colour, stroke) {
+			var outline = game.add.bitmapData(width, height);
+
+			outline.context.beginPath();
+			outline.context.rect(0, 0, width, height);
+			outline.context.strokeStyle = colour;
+			outline.context.lineWidth = stroke;
+			outline.context.stroke();
+
+			return outline;
 		}
 	};
 });

@@ -37,9 +37,14 @@ define(function(require) {
 
 		this.body.collideWorldBounds = true;
 		this.anchor.setTo(0.5, 0.5);
+		this.animations.add("walk", null, 10);
 	};
 
 	inherits(Alien, Phaser.Sprite);
+
+	Alien.prototype.mutate = function() {
+		// TODO apply a random mutation
+	};
 
 	Alien.prototype.update = function() {
 		// call update on the AI
@@ -50,22 +55,50 @@ define(function(require) {
 
 		this.body.velocity.x = vector.x;
 		this.body.velocity.y = vector.y;
+
+		if(vector.x !== 0 || vector.y !== 0) {
+			this.animations.play("walk");
+
+			if(vector.x > 0) {
+				this.scale.setTo(1, 1);
+			}
+			else if(vector.x < 0) {
+				this.scale.setTo(-1, 1);
+			}
+		}
+		else {
+			this.animations.stop("walk");
+			this.frame = 0;
+		}
 	};
 
 	// groups the aliens together
 	var AlienGroup = function(game, parent) {
 		Phaser.Group.call(this, game, parent);
+
+		this.spawnPoints = [];
 	};
 
 	inherits(AlienGroup, Phaser.Group);
 
 	// for now just add random aliens around the place
 	AlienGroup.prototype.addAlien = function() {
-		var point = helpers.getRandomPoint(this.game);
+		var point = this.game.rnd.pick(this.spawnPoints);
 
 		this.add(new Alien(this.game, point.x, point.y, {
-			"target": constants.CIVILIAN
+			"target": constants.CIVILIAN,
+			"aggression": 0.1
 		}));
+	};
+
+	AlienGroup.prototype.addSpawnPoints = function() {
+		var x1 = 200, x2 = constants.WORLD_WIDTH - 200;
+		var y1 = 200, y2 = constants.WORLD_HEIGHT - 200;
+
+		this.spawnPoints.push(this.game.add.image(x1, y1, "cave", this));
+		this.spawnPoints.push(this.game.add.image(x1, y2, "cave", this));
+		this.spawnPoints.push(this.game.add.image(x2, y1, "cave", this));
+		this.spawnPoints.push(this.game.add.image(x2, y2, "cave", this));
 	};
 
 	AlienGroup.prototype.spawnAliens = function(x, y, amount, mutation) {

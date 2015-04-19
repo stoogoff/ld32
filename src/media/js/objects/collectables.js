@@ -19,6 +19,7 @@ define(function(require) {
 
 	inherits(CollectableGroup, Phaser.Group);
 
+	// weapon types
 	CollectableGroup.prototype.addWeapon = function(type) {
 		var point = helpers.getRandomPoint(this.game);
 
@@ -38,6 +39,8 @@ define(function(require) {
 
 		this.addWeapon(this.game.rnd.pick(weapons));
 	};
+
+	// add checmical types
 	CollectableGroup.prototype.addRandomChemical = function() {
 		var type = this.game.rnd.pick(this.chemicalTypes);
 		var point = helpers.getRandomPoint(this.game);
@@ -48,6 +51,15 @@ define(function(require) {
 		for(var i = 0; i < num; ++i) {
 			this.addRandomChemical();
 		}
+	};
+
+	// collision detection
+	CollectableGroup.prototype.collision = function(sprite, callback, context) {
+		this.forEach(function(item) {
+			if(item.overlap(sprite)) {
+				callback.call(context, sprite, item);
+			}
+		});
 	};
 
 	return CollectableGroup;

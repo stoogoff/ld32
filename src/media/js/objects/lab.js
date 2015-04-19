@@ -13,41 +13,66 @@ define(function(require) {
 		};
 
 		// phaser related stuff
-		Phaser.Sprite.call(this, game, x, y, "lab-" + type);
+		Phaser.Image.call(this, game, x, y, "lab-" + type);
 
 		this.anchor.setTo(0.5, 0.5);
 
 		game.add.existing(this);
 	};
 
-	inherits(Lab, Phaser.Sprite);
+	inherits(Lab, Phaser.Image);
 
-	Lab.prototype.activate = function(owner, player) {
+	Lab.prototype.isCivilian = function() {
+		return this.data.type === constants.CIVILIAN;
+	};
+
+	Lab.prototype.isAtomic = function() {
+		return this.data.type === constants.ATOMIC;
+	};
+
+	Lab.prototype.isBiological = function() {
+		return this.data.type === constants.BIOLOGICAL;
+	};
+
+	Lab.prototype.isChemical = function() {
+		return this.data.type === constants.CHEMICAL;
+	};
+
+	Lab.prototype.activate = function(owner, player, callback) {
 		// nothing to do in civilian labs
-		if(this.data.type === constants.CIVILIAN) {
+		// atomic is handled in the main game play state
+		if(this.isCivilian() || this.isAtomic()) {
 			return;
 		}
 
-		// handle atomic bomb separately
-		if(this.data.type === constants.ATOMIC) {
-			console.log("BOOM!");
-			return;
-		}
-			
-		owner.pause = true;
+		this.owner = owner;
+		this.owner.activeOverlay = true;
+		this.player = player;
+		this.onComplete = callback;
 
 		// TODO display the screen and allow the player to modify stuff
-		console.log("activating " + this.data.type)
+		console.log("activating " + this.data.type);
 
 		// display UI
-		var overlay = new Overlay(this.game, this.data.type, player, function() {
-			// on complete
-			owner.pause = false;
-		});
+		this.overlay = new Overlay(this.game, this, player);
 
 		// do stuff
 		// when it's complete set...
 		// owner.pause = false;
+	};
+
+	Lab.prototype.onOverlayComplete = function(selected) {
+		// TODO stuff with selected
+		// either build a weapon and assign it to the player
+		// or create a bug
+
+		this.owner.activeOverlay = true;
+		this.overlay.destroy();
+	};
+
+	Lab.prototype.onOverlayCancelled = function() {
+		this.owner.activeOverlay = true;
+		this.overlay.destroy();
 	};
 
 	var LabGroup = function(game, parent) {

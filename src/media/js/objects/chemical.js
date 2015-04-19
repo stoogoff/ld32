@@ -2,12 +2,15 @@
 define(function(require) {
 	// imports
 	var inherits = require("../utils/inherits");
+	var constants = require("../utils/constants");
 
 	// a chemical for building bugs and weapons
 	var Chemical = function(game, x, y, data) {
 		// TODO should fiz and bubble out of the top
 		// TODO - sensible defaults
 		this.data = {
+			type: constants.CHEMICAL,
+
 			// weapon properties
 			range    : data["range"]    || 0,
 			damage   : data["damage"]   || 0,
@@ -21,22 +24,24 @@ define(function(require) {
 			strength  : data["strength"]  || 0,
 			speed     : data["speed"]     || 0,
 			toughness : data["toughness"] || 0,
-			smarts    : data["smarts"]    || 0
+			smarts    : data["smarts"]    || 0,
+
+			// descriptive properties
+			name        : data["name"],
+			description : data["description"],
+			image       : data["image"]
 		};
 
-		// image to use will come from data
-		this.image = data["image"];
-
 		// phaser related stuff
-		Phaser.Sprite.call(this, game, x, y, this.image);
+		Phaser.Image.call(this, game, x, y, this.data.image);
 
-		game.physics.arcade.enable(this);
+		//game.physics.arcade.enable(this);
 		game.add.existing(this);
 
 		this.anchor.setTo(0.5, 0.5);
 	};
 
-	inherits(Chemical, Phaser.Sprite);
+	inherits(Chemical, Phaser.Image);
 
 	return Chemical;
 });

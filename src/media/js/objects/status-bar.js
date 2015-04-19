@@ -3,6 +3,7 @@ define(function(require) {
 	// imports
 	var inherits = require("../utils/inherits");
 	var constants = require("../utils/constants");
+	var helpers = require("../utils/helpers");
 
 	// TODO add icon
 	// TODO add possibility to set colour
@@ -20,26 +21,15 @@ define(function(require) {
 
 		this.owner = owner;
 		this.stat = stat;
-		this.maxValue = maxValue || this.owner.data[this.stat];
+		this.maxValue = maxValue || this.owner[this.stat];
 		this.rectangle = new Phaser.Rectangle(x, y, width, height);
 
-		var fill = game.add.bitmapData(width, height);
-
-		fill.context.fillStyle = colour;
-		fill.context.beginPath();
-		fill.context.rect(0, 0, width, height);
-		fill.context.fill();
-
-		var outline = game.add.bitmapData(width, height);
-
-		outline.context.beginPath();
-		outline.context.rect(0, 0, width, height);
-		outline.context.strokeStyle = constants.BORDER_COLOUR;
-		outline.context.lineWidth = constants.BORDER_WIDTH;
-		outline.context.stroke();
+		var fill = helpers.createSolid(game, width, height, colour);
+		var outline = helpers.createOutline(game, width, height, constants.BORDER_COLOUR, constants.BORDER_WIDTH);
 
 		this.bar = game.add.sprite(x, y, fill);
 		this.bar.fixedToCamera = true;
+		this.bar.scale = new Phaser.Point(this.getValue(), 1);
 
 		this.border = game.add.sprite(x, y, outline);
 		this.border.fixedToCamera = true;
@@ -51,11 +41,12 @@ define(function(require) {
 
 	inherits(StatusBar, Phaser.TileSprite);
 
-	StatusBar.prototype.update = function() {
-		var value = this.owner.data[this.stat] / this.maxValue;
+	StatusBar.prototype.getValue = function() {
+		return this.game.math.clamp(this.owner[this.stat] / this.maxValue, 0, 1);
+	};
 
-		if(value < 0)
-			value = 0;
+	StatusBar.prototype.update = function() {
+		var value = this.getValue();
 
 		this.game.add.tween(this.bar.scale).to({ x: value }, 100).start();
 	};

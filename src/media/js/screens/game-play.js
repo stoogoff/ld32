@@ -6,20 +6,21 @@ define(function(require) {
 	var Labs = require("../objects/lab");
 	var Collectables = require("../objects/collectables");
 	var StatusBar = require("../objects/status-bar");
-	var Inventory = require("../objects/inventory");
+	var Inventory = require("../objects/inventory").Inventory;
+	var AtomBomb = require("../objects/atom-bomb");
 
 	// helper imports
 	var constants = require("../utils/constants");
 	var helpers = require("../utils/helpers");
 
 	// objects
-	var player, labs, collectable;
+	var player, labs, collectable, bomb;
 
 	// some basic timers
 	var attackTimer = 0, civiliansTimer = 0;
 
 	// keyboard
-	var cursors, fire, activate;
+	var cursors, activate;
 
 	// HUD elements
 	var health, civilians, aBomb, bugs, inventory;
@@ -65,11 +66,22 @@ define(function(require) {
 		labs = new Labs(this.game);
 		labs.createLabs(x, y);
 
-		// set up the player
-		player = new Player(this.game, x, y);
-		this.game.camera.follow(player);
+		// set up the alien bases
+		aliens = new Aliens(this.game);
+		aliens.addSpawnPoints();
+
+		// this needs to be on a timer and from four specific points
+		for(var i = 0; i < 10; ++i) {
+			aliens.addAlien();
+		}
 
 		collectables = new Collectables(this.game);
+
+		// DELME
+		collectables.addGun();
+		collectables.addGun();
+		collectables.addBomb();
+		collectables.addBomb();
 
 		// add starting collectible
 		collectables.addRandomWeapon();
@@ -83,51 +95,34 @@ define(function(require) {
 		
 		collectables.timer.timer.start();
 
-		aliens = new Aliens(this.game);
+		// set up the player
+		player = new Player(this.game, x, y);
+		this.game.camera.follow(player);
 
-		// this needs to be on a timer and from four specific points
-		for(var i = 0; i < 10; ++i) {
-			aliens.addAlien();
-		}
-
-		// alien tests
-		/*var aliens = [
-			new Alien(this.game, x - 300, y - 100, {
-				target: constants.PLAYER,
-				aggression: 0.5,
-				distance: 200
-			}),
-			new Alien(this.game, x - 300, y - 100, {
-				target: constants.CIVILIAN
-			}),
-			new Alien(this.game, x - 300, y - 100, {
-				target: { x: x, y: y}
-			}),
-			new Alien(this.game, x - 300, y - 100, {
-				target: null
-			}),
-			new Alien(this.game, x - 300, y - 100)
-		];*/
+		// non-display objcts
+		bomb = new AtomBomb(this.game);
 
 		// HUD
 		inventory = new Inventory(this.game, 790, 790);
-		health    = new StatusBar(this.game, 640, 15, player, "toughness", "heart",     constants.BAD_COLOUR);
-		civilians = new StatusBar(this.game, 640, 40, player, "civilians", "person",    constants.BAD_COLOUR);
-		aBomb     = new StatusBar(this.game, 20,  15, player, "atomBomb",  "rocket",    constants.GOOD_COLOUR, 100);
-		bugs      = new StatusBar(this.game, 20,  40, player, "bugs",      "lightning", constants.GOOD_COLOUR, 100);
+		health    = new StatusBar(this.game, 640, 15, player.data, "toughness",    "heart",     constants.BAD_COLOUR);
+		civilians = new StatusBar(this.game, 640, 40, player.data, "civilians",    "person",    constants.BAD_COLOUR);
+		aBomb     = new StatusBar(this.game, 20,  15, bomb,        "completeness", "rocket",    constants.GOOD_COLOUR, 100);
+		bugs      = new StatusBar(this.game, 20,  40, player.data, "bugs",         "lightning", constants.GOOD_COLOUR, 100);
 
 		bugs.hide();
 
 		// set up player controls
 		cursors  = this.game.input.keyboard.createCursorKeys();
-		fire     = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-		activate = this.game.input.keyboard.addKey(Phaser.Keyboard.B);
+		activate = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
-		this.pause = false;
+		// whether or not a lab overlay is active
+		this.activeOverlay = false;
 	};
 
 	GamePlay.prototype.update = function() {
-		if(this.pause) {
+		bomb.update();
+
+		if(this.activeOverlay) {
 			return;
 		}
 
@@ -150,26 +145,37 @@ define(function(require) {
 
 		player.move(vector);
 
-		if(fire.isDown) {
+		/*if(fire.isDown) {
 			console.log("firing")
-		}
+		}*/
 
 		// handle collisions for pick ups
-		this.game.physics.arcade.collide(player, collectables, this.playersVsCollectable, null, this);
+		collectables.collision(player, this.playersVsCollectable, this);
 
 		// handle collisions for player and aliens
 		this.game.physics.arcade.collide(player, aliens, this.playerVsAliens, null, this);
 
+		var hasActivated = false;
+
+		// check for activate inside labs and aliens in labs
+		// if the activate button isn't used (e.g. civilian lab) then the player can fire
 		labs.forEach(function(lab) {
 			// see if the play is in a lab
 			if(activate.isDown) {
 				if(lab.overlap(player)) {
-					lab.activate(this, player);
+					if(lab.isAtomic() && bomb.isReady()) {
+						bomb.fire(collectables, aliens);
+						hasActivated = true;
+					}
+					else if(!lab.isCivilian()) {
+						lab.activate(this, player);
+						hasActivated = true;
+					}
 				}
 			}
 
 			// handle collision between aliens and the civilian lab
-			if(lab.data.type === constants.CIVILIAN) {
+			if(lab.isCivilian()) {
 				var damage = 0;
 
 				aliens.forEach(function(alien) {
@@ -185,6 +191,11 @@ define(function(require) {
 				}
 			}
 		}.bind(this));
+
+		// a useful activate hasn't happened so fire
+		if(activate.isDown && !hasActivated) {
+			console.log("FIRE!")
+		}
 
 		// TODO bugs vs aliens
 	};

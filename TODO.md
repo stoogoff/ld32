@@ -28,10 +28,16 @@
 		- AI
 	- Swarm and spawning
 - Real graphics and animations
+	- DONE alien animations
+	- DONE bug animations
+	- Particle effects on flasks
 - Come up with chemical types and properties
 - Nuclear attack
+	- DONE Object destruction
+	- Alien mutation
 - Music
 - Sounds effects
 - Other screens
 	- Menu
 	- Game over
+- Diagonal movement for player and possibly bugs and aliens

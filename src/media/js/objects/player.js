@@ -4,13 +4,12 @@ define(function(require) {
 	var _ = require("underscore");
 
 	// module vars
-	var SPEED = 400;
+	var SPEED = 400, MAX_CARRY = 10;
 
 	var Player = function(game, x, y, frame) {
 		this.data = {
 			toughness: 100,
 			civilians: 1000,
-			atomBomb: 0,
 			weapon: null,
 			inventory: []
 		};
@@ -51,6 +50,11 @@ define(function(require) {
 	};
 
 	Player.prototype.addInventoryItem = function(sprite) {
+		// full up!
+		if(this.data.inventory.length >= MAX_CARRY) {
+			return false;
+		}
+
 		sprite = sprite.data;
 
 		if(_.contains(this.data.inventory, sprite)) {

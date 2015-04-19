@@ -3,6 +3,7 @@
 
 		{
 			"name": "Balonium",
+			"description": "",
 			"image": "flask-blue",
 			"range": 0,
 			"damage": 0,
@@ -18,6 +19,7 @@
 		},
 		{
 			"name": "Triffidium",
+			"description": "",
 			"image": "flask-green",
 			"range": 0,
 			"damage": 0,
@@ -33,6 +35,7 @@
 		},
 		{
 			"name": "Irradium",
+			"description": "",
 			"image": "flask-orange",
 			"range": 0,
 			"damage": 0,
@@ -48,6 +51,7 @@
 		},
 		{
 			"name": "Obscurium",
+			"description": "",
 			"image": "flask-pink",
 			"range": 0,
 			"damage": 0,
@@ -63,6 +67,7 @@
 		},
 		{
 			"name": "Denilium",
+			"description": "",
 			"image": "flask-purple",
 			"range": 0,
 			"damage": 0,
@@ -78,6 +83,7 @@
 		},
 		{
 			"name": "Geranium",
+			"description": "",
 			"image": "flask-red",
 			"range": 0,
 			"damage": 0,
