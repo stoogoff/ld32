@@ -10,13 +10,13 @@
 		- DONE Targetting
 		- DONE Retargetting after success
 		- DONE Aliens
-	- Pickups
+	- DONE Pickups
 		- DONE Inventory
 		- DONE Weapon Types
-		- Chemicals
-	- HUD
+		- DONE Chemicals
+	- DONE HUD
 		- DONE Power bars
-		- Icons
+		- DONE Icons
 		- DONE Inventory
 	- Build screens
 	- Player weapons
@@ -29,3 +29,9 @@
 	- Swarm and spawning
 - Real graphics and animations
 - Come up with chemical types and properties
+- Nuclear attack
+- Music
+- Sounds effects
+- Other screens
+	- Menu
+	- Game over

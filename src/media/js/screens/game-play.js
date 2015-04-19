@@ -2,7 +2,7 @@
 define(function(require) {
 	// object imports
 	var Player = require("../objects/player");
-	var Alien = require("../objects/alien");
+	var Aliens = require("../objects/alien");
 	var Labs = require("../objects/lab");
 	var Collectables = require("../objects/collectables");
 	var StatusBar = require("../objects/status-bar");
@@ -15,10 +15,13 @@ define(function(require) {
 	// objects
 	var player, labs, collectable;
 
+	// some basic timers
+	var attackTimer = 0, civiliansTimer = 0;
+
 	// keyboard
 	var cursors, fire, activate;
 
-	// HUD elemenys
+	// HUD elements
 	var health, civilians, aBomb, bugs, inventory;
 
 	var GamePlay = function() {
@@ -67,30 +70,29 @@ define(function(require) {
 		player = new Player(this.game, x, y);
 		this.game.camera.follow(player);
 
-		// HUD
-		inventory = new Inventory(this.game, 790, 790);
-		health    = new StatusBar(this.game, 640, 15, player, "toughness", "heart", constants.BAD_COLOUR);
-		civilians = new StatusBar(this.game, 640, 40, player, "civilians", "person", constants.BAD_COLOUR);
-		aBomb     = new StatusBar(this.game, 20, 15, player, "atomBomb", "rocket", constants.GOOD_COLOUR, 100);
-		bugs      = new StatusBar(this.game, 20, 40, player, "bugs", "lightning", constants.GOOD_COLOUR, 100);
-
-		bugs.hide();
-
 		collectables = new Collectables(this.game);
 
-		// this needs to happen on a timer
+		// add starting collectible
 		collectables.addRandomWeapon();
-		//collectables.addGun();
-		//collectables.addSpray();
-		//collectables.addBomb();
+		collectables.addRandomChemicals(3);
+		collectables.timer = this.game.time.events.loop(Phaser.Timer.SECOND * 20, function() {
+			// TODO better creation method than just popping into place
+			// TODO could make sure they're off screen
+			this.addRandomWeapon();
+			this.addRandomChemicals(3);
+		}, collectables);
+		
+		collectables.timer.timer.start();
 
-		// as does this
+		aliens = new Aliens(this.game);
+
+		// this needs to be on a timer and from four specific points
 		for(var i = 0; i < 10; ++i) {
-			collectables.addRandomChemical();
+			aliens.addAlien();
 		}
 
 		// alien tests
-		var aliens = [
+		/*var aliens = [
 			new Alien(this.game, x - 300, y - 100, {
 				target: constants.PLAYER,
 				aggression: 0.5,
@@ -106,8 +108,16 @@ define(function(require) {
 				target: null
 			}),
 			new Alien(this.game, x - 300, y - 100)
-		];
+		];*/
 
+		// HUD
+		inventory = new Inventory(this.game, 790, 790);
+		health    = new StatusBar(this.game, 640, 15, player, "toughness", "heart",     constants.BAD_COLOUR);
+		civilians = new StatusBar(this.game, 640, 40, player, "civilians", "person",    constants.BAD_COLOUR);
+		aBomb     = new StatusBar(this.game, 20,  15, player, "atomBomb",  "rocket",    constants.GOOD_COLOUR, 100);
+		bugs      = new StatusBar(this.game, 20,  40, player, "bugs",      "lightning", constants.GOOD_COLOUR, 100);
+
+		bugs.hide();
 
 		// set up player controls
 		cursors  = this.game.input.keyboard.createCursorKeys();
@@ -145,24 +155,55 @@ define(function(require) {
 			console.log("firing")
 		}
 
-		if(activate.isDown) {
+		// handle collisions for pick ups
+		this.game.physics.arcade.collide(player, collectables, this.playersVsCollectable, null, this);
+
+		// handle collisions for player and aliens
+		this.game.physics.arcade.collide(player, aliens, this.playerVsAliens, null, this);
+
+		labs.forEach(function(lab) {
 			// see if the play is in a lab
-			labs.forEach(function(lab) {
+			if(activate.isDown) {
 				if(lab.overlap(player)) {
 					lab.activate(this, player);
 				}
-			}.bind(this));
-		}
+			}
 
-		// handle collisions for pick ups
-		this.game.physics.arcade.collide(player, collectables, this.collectableCollision, null, this);
+			// handle collision between aliens and the civilian lab
+			if(lab.data.type === constants.CIVILIAN) {
+				var damage = 0;
+
+				aliens.forEach(function(alien) {
+					if(lab.overlap(alien)) {
+						damage += alien.data.strength;
+					}
+				}.bind(this));
+
+				// civilians only takes damage every 400 milliseconds from a direct attack
+				if(this.game.time.now > civiliansTimer) {
+					player.data.civilians -= this.game.math.clamp(damage, 0, 100);
+					civiliansTimer = this.game.time.now + 400;
+				}
+			}
+		}.bind(this));
+
+		// TODO bugs vs aliens
 	};
 
 
-	GamePlay.prototype.collectableCollision = function(player, object) {
-		if(player.addInventoryItem(object)) {
-			collectables.removeChild(object);
-			inventory.addInventoryItem(object.key);
+	GamePlay.prototype.playersVsCollectable = function(player, inventoryItem) {
+		if(player.addInventoryItem(inventoryItem)) {
+			collectables.removeChild(inventoryItem);
+			inventory.addInventoryItem(inventoryItem.key);
+		}
+	};
+
+	GamePlay.prototype.playerVsAliens = function(player, alien) {
+		// player only takes damage every 500 millisecond from a direct attack
+		if(this.game.time.now > attackTimer) {
+			player.data.toughness -= alien.data.strength;
+
+			attackTimer = this.game.time.now + 500;
 		}
 	};
 

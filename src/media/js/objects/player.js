@@ -9,7 +9,7 @@ define(function(require) {
 	var Player = function(game, x, y, frame) {
 		this.data = {
 			toughness: 100,
-			civilians: 100,
+			civilians: 1000,
 			atomBomb: 0,
 			weapon: null,
 			inventory: []

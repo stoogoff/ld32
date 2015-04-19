@@ -5,8 +5,8 @@ define(function(require) {
 
 	// a chemical for building bugs and weapons
 	var Chemical = function(game, x, y, data) {
+		// TODO should fiz and bubble out of the top
 		// TODO - sensible defaults
-
 		this.data = {
 			// weapon properties
 			range    : data["range"]    || 0,

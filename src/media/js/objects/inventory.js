@@ -4,7 +4,6 @@ define(function(require) {
 	var inherits = require("../utils/inherits");
 	var constants = require("../utils/constants");
 
-
 	var InventoryItem = function(game, x, y, image) {
 		Phaser.Sprite.call(this, game, x, y, image);
 

@@ -44,6 +44,11 @@ define(function(require) {
 
 		this.add(new Chemical(this.game, point.x, point.y, type));
 	};
+	CollectableGroup.prototype.addRandomChemicals = function(num) {
+		for(var i = 0; i < num; ++i) {
+			this.addRandomChemical();
+		}
+	};
 
 	return CollectableGroup;
 });

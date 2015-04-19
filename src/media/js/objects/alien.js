@@ -2,6 +2,10 @@
 define(function(require) {
 	// imports
 	var inherits = require("../utils/inherits");
+	var helpers = require("../utils/helpers");
+	var constants = require("../utils/constants");
+
+	// import objects
 	var AI = require("./ai");
 
 	var Alien = function(game, x, y, mutation) {
@@ -12,7 +16,7 @@ define(function(require) {
 		// default AI stuff
 		var target     = mutation["target"] || null;
 		var aggression = mutation["aggression"] || 0.5;
-		var distance = mutation["distance"] || false;
+		var distance   = mutation["distance"] || false;
 
 		// default stats plus any mutation stuff
 		this.data = {
@@ -42,10 +46,10 @@ define(function(require) {
 		// the AI will need to look up the target
 		// which could be an object or an x, y point
 		// the AI will return a vector the alien needs to move in
-		var velocity = this.data.smarts.update(this.game, this);
+		var vector = this.data.smarts.update(this.game, this);
 
-		this.body.velocity.x = velocity.x;
-		this.body.velocity.y = velocity.y;
+		this.body.velocity.x = vector.x;
+		this.body.velocity.y = vector.y;
 	};
 
 	// groups the aliens together
@@ -55,12 +59,18 @@ define(function(require) {
 
 	inherits(AlienGroup, Phaser.Group);
 
-	AlienGroup.prototype.spawnAliens = function(x, y, amount, mutation) {
-		var offset = 150;
+	// for now just add random aliens around the place
+	AlienGroup.prototype.addAlien = function() {
+		var point = helpers.getRandomPoint(this.game);
 
+		this.add(new Alien(this.game, point.x, point.y, {
+			"target": constants.CIVILIAN
+		}));
+	};
+
+	AlienGroup.prototype.spawnAliens = function(x, y, amount, mutation) {
 		// the spawn the supplied amount of aliens over the next 10 seconds from the supplied point
 	};
 
-	//return AlienGroup;
-	return Alien;
+	return AlienGroup;
 });
