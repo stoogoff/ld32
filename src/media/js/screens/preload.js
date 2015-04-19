@@ -10,7 +10,8 @@ define(function(require) {
 
 			// load graphics
 			var keys = [
-				"alien", "player",
+				"background",
+				"alien",
 				"lab-atomic", "lab-biological", "lab-chemical", "lab-civilian",
 				"weapon-gun", "weapon-bomb", "weapon-spray",
 				"flask-blue", "flask-green", "flask-orange", "flask-pink", "flask-purple", "flask-red",
@@ -19,6 +20,9 @@ define(function(require) {
 			keys.forEach(function(key) {
 				self.load.image(key, "media/img/" + key + ".png");
 			});
+
+			// animations
+			this.load.spritesheet("player", "media/img/player.png", 32, 32);
 
 			// load json data
 			this.load.json("objects", "media/data/objects.json");

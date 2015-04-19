@@ -29,10 +29,9 @@ define(function(require) {
 	};
 
 	GamePlay.prototype.create = function() {
-		//this.game.add.tileSprite(0, 0, 800, 800, "bg");
-
 		// basic world stuff
 		this.game.stage.backgroundColor = "#584838";
+		this.game.add.tileSprite(0, 0, constants.WORLD_WIDTH, constants.WORLD_HEIGHT, "background");
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
 		this.game.world.setBounds(0, 0, constants.WORLD_WIDTH, constants.WORLD_HEIGHT);
 

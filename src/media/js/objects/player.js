@@ -4,7 +4,7 @@ define(function(require) {
 	var _ = require("underscore");
 
 	// module vars
-	var SPEED = 500;
+	var SPEED = 400;
 
 	var Player = function(game, x, y, frame) {
 		this.data = {
@@ -22,6 +22,8 @@ define(function(require) {
 		game.physics.arcade.enable(this);
 		game.add.existing(this);
 
+		this.animations.add("walk", null, 10);
+
 		this.body.collideWorldBounds = true;
 		this.anchor.setTo(0.5, 0.5);
 	};
@@ -31,6 +33,21 @@ define(function(require) {
 	Player.prototype.move = function(vector) {
 		this.body.velocity.x = vector.x * SPEED;
 		this.body.velocity.y = vector.y * SPEED;
+
+		if(vector.x !== 0 || vector.y !== 0) {
+			this.animations.play("walk");
+
+			if(vector.x > 0) {
+				this.scale.setTo(-1, 1);
+			}
+			else if(vector.x < 0) {
+				this.scale.setTo(1, 1);
+			}
+		}
+		else {
+			this.animations.stop("walk");
+			this.frame = 0;
+		}
 	};
 
 	Player.prototype.addInventoryItem = function(sprite) {
