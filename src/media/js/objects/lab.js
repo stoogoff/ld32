@@ -50,9 +50,6 @@ define(function(require) {
 		this.player = player;
 		this.onComplete = callback;
 
-		// TODO display the screen and allow the player to modify stuff
-		console.log("activating " + this.data.type);
-
 		// display UI
 		this.overlay = new Overlay(this.game, this, player);
 
@@ -65,13 +62,14 @@ define(function(require) {
 		// TODO stuff with selected
 		// either build a weapon and assign it to the player
 		// or create a bug
+		console.log(selected);
 
-		this.owner.activeOverlay = true;
+		this.owner.activeOverlay = false;
 		this.overlay.destroy();
 	};
 
 	Lab.prototype.onOverlayCancelled = function() {
-		this.owner.activeOverlay = true;
+		this.owner.activeOverlay = false;
 		this.overlay.destroy();
 	};
 

@@ -6,19 +6,37 @@ define(function(require) {
 	var helpers = require("../utils/helpers");
 	var _ = require("underscore");
 
-	// import objects
-	var InventoryItem = require("./inventory").InventoryItem;
-
 	// module vars
 	// text syles
 	var style = {
 		title   : { font: "40px Arial", fill: "#00ff44", align: "center" },
 		section : { font: "30px Arial", fill: "#505050", align: "left" },
-		body    : { font: "20px Arial", fill: "#eee", align: "left" }
+		summary : { font: "20px Arial", fill: "#eee", align: "left" },
+		body    : { font: "14px Arial", fill: "#eee", align: "left" }
 	};
 
 	// constants
-	var PAD = 100, INVENTORY_SCALE = 2;
+	var PAD = 100;
+
+	var InventoryItem = function(game, x, y, image) {
+		this.active = false;
+
+		// create the background first so the icon sits over it
+		this.background = game.add.image(x, y, "inventory", 1);
+		this.background.anchor.setTo(0.5, 0.5);
+		this.background.fixedToCamera = true;
+		this.background.scale = new Phaser.Point(1.2, 1.2);
+
+		Phaser.Image.call(this, game, x, y, image, 0);
+
+		this.scale = new Phaser.Point(2, 2);
+		this.fixedToCamera = true;
+		this.anchor.setTo(0.5, 0.5);
+		this.inputEnabled = true;
+		this.input.useHandCursor = true;
+	};
+
+	inherits(InventoryItem, Phaser.Image);
 
 	var Panel = function(game, x, y, title, selectionMax) {
 		Phaser.Group.call(this, game);
@@ -45,30 +63,22 @@ define(function(require) {
 		// display icons in a grid
 		var item = new InventoryItem(this.game, this.childX, this.childY, image);
 
-		item.active = false;
-		item.anchor.setTo(0.5, 0.5);
-		item.fill.anchor.setTo(0.5, 0.5);
-		item.border.anchor.setTo(0.5, 0.5);
-
-		item.fill.scale = item.border.scale = item.scale = new Phaser.Point(INVENTORY_SCALE, INVENTORY_SCALE);
-		item.fill.alpha = item.border.alpha = item.alpha = 0.8;
-
-		item.inputEnabled = true;
-		item.input.useHandCursor = true;
+		// TODO when the mouse is over the icon the name and description of the icon is displayed
+		// when the mouse clicks an icon it is highlighted
 		item.events.onInputOver.add(function() {
 			// enough are selected
-			if(this.selected.length >= this.selectionMax) {
+			if(this.selected.length >= this.selectionMax || item.active) {
 				return;
 			}
 
-			item.fill.alpha = item.border.alpha = item.alpha = 1;
+			item.background.frame = 0;
 		}, this);
 		item.events.onInputOut.add(function() {
 			if(item.active) {
 				return;
 			}
 
-			item.fill.alpha = item.border.alpha = item.alpha = 0.8;
+			item.background.frame = 1;
 		}, this);
 		item.events.onInputDown.add(function() {
 			// enough are selected
@@ -76,65 +86,68 @@ define(function(require) {
 				return;
 			}
 
-			// remove from selected
+			item.active = !item.active;
+
+			// add to selected
 			if(item.active) {
+				this.selected.push(item);
+				item.background.frame = 2;
+			}
+			// remove from selected
+			else {
 				this.selected = _.without(this.selected, item);
 			}
-			// add to selected
-			else {
-				this.selected.push(item);
-			}
 
-			item.active = !item.active;
 		}, this);
 
-		this.add(item.fill);
+		this.add(item.background);
 		this.add(item);
-		this.add(item.border);
-		this.childX += item.width + constants.BORDER_WIDTH * INVENTORY_SCALE;
+		this.childX += item.background.width;
 
 		if(++this.grid >= 3) {
 			this.grid = 0;
 			this.childX = 240;
-			this.childY += item.height + constants.BORDER_WIDTH * INVENTORY_SCALE;
+			this.childY += item.background.height;
 		}
 	};
 
 	var Overlay = function(game, lab, player) {
+		Phaser.Group.call(this, game);
+
 		// background
-		var width = constants.SCREEN_WIDTH - PAD;
+		var width  = constants.SCREEN_WIDTH - PAD;
 		var height = constants.SCREEN_HEIGHT - PAD;
-		var fill = helpers.createSolid(game, width, height, constants.BACKGROUND_COLOUR);
+		var fill   = helpers.createSolid(game, width, height, constants.BACKGROUND_COLOUR);
 
-		Phaser.Image.call(this, game, PAD / 2, PAD / 2, fill);
+		var background = game.add.image(PAD / 2, PAD / 2, fill);
 
-		this.anchor.setTo(0, 0);
-		this.fixedToCamera = true;
-
-		game.add.existing(this);
+		background.anchor.setTo(0, 0);
+		background.fixedToCamera = true;
 
 		// create the title
-		var title = "Create Biological Weapons";
-		var text  = "Choose up to three chemicals.";
+		var titleText   = "Create Biological Weapons";
+		var summaryText = "Choose up to three chemicals.";
 
 		if(lab.isChemical()) {
-			title = "Create Chemical Weapons";
-			text  = "Choose a weapon type and one or two chemicals.";
+			titleText   = "Create Chemical Weapons";
+			summaryText = "Choose a weapon type and one or two chemicals.";
 		}
 
-		this.title = game.add.text(constants.SCREEN_WIDTH / 2, 100, title, style.title);
-		this.title.anchor.setTo(0.5, 0.5);
-		this.title.fixedToCamera = true;
+		var title = game.add.text(constants.SCREEN_WIDTH / 2, 100, titleText, style.title);
 
-		this.text = game.add.text(constants.SCREEN_WIDTH / 2, 150, text, style.body);
-		this.text.anchor.setTo(0.5, 0.5);
-		this.text.fixedToCamera = true;
+		title.anchor.setTo(0.5, 0.5);
+		title.fixedToCamera = true;
 
-		this.panels = [];
+		var text = game.add.text(constants.SCREEN_WIDTH / 2, 150, summaryText, style.summary);
+		
+		text.anchor.setTo(0.5, 0.5);
+		text.fixedToCamera = true;
+
+		var weapons = null;
 
 		// add section for weapons
 		if(lab.isChemical()) {
-			var weapons = new Panel(game, 100, 200, "Weapon Type", 1);
+			weapons = new Panel(game, 100, 200, "Weapon Type", 1);
 			
 			// display all weapons in the player's inventory
 			_.chain(player.data.inventory).filter(function(item) {
@@ -142,8 +155,6 @@ define(function(require) {
 			}).pluck("image").uniq().each(function(image) {
 				weapons.addInventoryItem(image);
 			});
-
-			this.panels.push(weapons);
 		}
 
 		// add section for chemicals
@@ -157,17 +168,41 @@ define(function(require) {
 			chemicals.addInventoryItem(image);
 		});
 
-		this.panels.push(chemicals);
+		// add save and cancel buttons
+		var save = game.add.button(constants.SCREEN_WIDTH / 2 - 100, constants.SCREEN_HEIGHT - 100, "btn-save",   function() {
+			var selected = chemicals.selected;
 
-		// TODO all displayed icons have rollover states
-		//	when the mouse is over the icon the name and description of the icon is displayed
-		//	when the mouse clicks an icon it is highlighted
-		// TODO add save and cancel buttons
+			if(weapons) {
+				selected = selected.concat(weapons.selected);
+			}
+
+			lab.onOverlayComplete(_.pluck(selected, "key"));
+		}, this, 0, 0, 1);
+		var cancel = game.add.button(constants.SCREEN_WIDTH / 2 + 100, constants.SCREEN_HEIGHT - 100, "btn-cancel", lab.onOverlayCancelled, lab, 0, 0, 1);
+
+		cancel.fixedToCamera = save.fixedToCamera = true;
+
+		cancel.anchor.setTo(0.5, 0.5);
+		save.anchor.setTo(0.5, 0.5);
+
+		// add everything
+		this.add(background);
+		this.add(title);
+		this.add(text);
+
+		if(weapons) {
+			this.add(weapons);
+		}
+
+		this.add(chemicals);
+		this.add(save);
+		this.add(cancel);
+
 		//	if save is pressed all of the selected icons are passed to the lab as an array
-		//	if cancel is pressed the lab is notified
+		//	if cancel is pressed the lab is notified+
 	};
 
-	inherits(Overlay, Phaser.Image);
+	inherits(Overlay, Phaser.Group);
 
 	return Overlay;
 });

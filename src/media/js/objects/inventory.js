@@ -57,8 +57,5 @@ define(function(require) {
 		// TODO remove inventory item
 	};
 
-	return {
-		Inventory: Inventory,
-		InventoryItem: InventoryItem
-	};
+	return Inventory;
 });

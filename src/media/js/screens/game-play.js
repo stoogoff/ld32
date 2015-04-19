@@ -6,7 +6,7 @@ define(function(require) {
 	var Labs = require("../objects/lab");
 	var Collectables = require("../objects/collectables");
 	var StatusBar = require("../objects/status-bar");
-	var Inventory = require("../objects/inventory").Inventory;
+	var Inventory = require("../objects/inventory");
 	var AtomBomb = require("../objects/atom-bomb");
 
 	// helper imports

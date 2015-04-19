@@ -24,6 +24,9 @@ define(function(require) {
 			this.load.spritesheet("alien", "media/img/alien.png", 24, 24);
 			this.load.spritesheet("player", "media/img/player.png", 32, 32);
 			this.load.spritesheet("bug", "media/img/bug.png", 18, 12);
+			this.load.spritesheet("inventory", "media/img/inventory.png", 48, 48);
+			this.load.spritesheet("btn-save", "media/img/btn-save.png", 120, 32);
+			this.load.spritesheet("btn-cancel", "media/img/btn-cancel.png", 120, 32);
 
 			// load json data
 			this.load.json("objects", "media/data/objects.json");
