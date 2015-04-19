@@ -59,9 +59,11 @@ define(function(require) {
 
 	inherits(Panel, Phaser.Group);
 
-	Panel.prototype.addInventoryItem = function(image) {
+	Panel.prototype.addInventoryItem = function(data) {
 		// display icons in a grid
-		var item = new InventoryItem(this.game, this.childX, this.childY, image);
+		var item = new InventoryItem(this.game, this.childX, this.childY, data.image);
+
+		item.data = data;
 
 		// TODO when the mouse is over the icon the name and description of the icon is displayed
 		// when the mouse clicks an icon it is highlighted
@@ -152,8 +154,10 @@ define(function(require) {
 			// display all weapons in the player's inventory
 			_.chain(player.data.inventory).filter(function(item) {
 				return helpers.isWeapon(item.type);
-			}).pluck("image").uniq().each(function(image) {
-				weapons.addInventoryItem(image);
+			}).uniq(function(item) {
+				return item.image;
+			}).each(function(item) {
+				weapons.addInventoryItem(item);
 			});
 		}
 
@@ -164,11 +168,14 @@ define(function(require) {
 		// display all chemicals in the player's inventory
 		_.chain(player.data.inventory).filter(function(item) {
 			return !helpers.isWeapon(item.type);
-		}).pluck("image").uniq().each(function(image) {
-			chemicals.addInventoryItem(image);
+		}).uniq(function(item) {
+			return item.image;
+		}).each(function(item) {
+			chemicals.addInventoryItem(item);
 		});
 
 		// add save and cancel buttons
+		//	if save is pressed all of the selected icons are passed to the lab as an array
 		var save = game.add.button(constants.SCREEN_WIDTH / 2 - 100, constants.SCREEN_HEIGHT - 100, "btn-save",   function() {
 			var selected = chemicals.selected;
 
@@ -176,8 +183,10 @@ define(function(require) {
 				selected = selected.concat(weapons.selected);
 			}
 
-			lab.onOverlayComplete(_.pluck(selected, "key"));
+			lab.onOverlayComplete(_.pluck(selected, "data"));
 		}, this, 0, 0, 1);
+
+		//	if cancel is pressed the lab is notified
 		var cancel = game.add.button(constants.SCREEN_WIDTH / 2 + 100, constants.SCREEN_HEIGHT - 100, "btn-cancel", lab.onOverlayCancelled, lab, 0, 0, 1);
 
 		cancel.fixedToCamera = save.fixedToCamera = true;
@@ -197,9 +206,6 @@ define(function(require) {
 		this.add(chemicals);
 		this.add(save);
 		this.add(cancel);
-
-		//	if save is pressed all of the selected icons are passed to the lab as an array
-		//	if cancel is pressed the lab is notified+
 	};
 
 	inherits(Overlay, Phaser.Group);

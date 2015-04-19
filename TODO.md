@@ -20,7 +20,7 @@
 		- DONE Inventory
 	- DONE Build screens
 	- Player weapons
-		- Create weapons
+		- DONE Create weapons
 		- Different attack types
 		- Alien combat
 	- Bugs
@@ -41,3 +41,7 @@
 	- DONE Menu
 	- Game over
 - Diagonal movement for player and possibly bugs and aliens
+
+## BUGS
+
+- FIXED If the player activates a lab while moving they continue movings while the overlay is displayed

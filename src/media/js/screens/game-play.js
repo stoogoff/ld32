@@ -111,12 +111,19 @@ define(function(require) {
 
 		bugs.hide();
 
+		// notify the inventory HUD of any changes to the player's inventory
+		player.onUpdateInventory(inventory, inventory.updateInventory);
+
 		// set up player controls
 		cursors  = this.game.input.keyboard.createCursorKeys();
 		activate = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
 		// whether or not a lab overlay is active
 		this.activeOverlay = false;
+
+		// place holder for any bullets fired by the player
+		this.bullet = null;
+		this.destroyBullet = false;
 	};
 
 	GamePlay.prototype.update = function() {
@@ -154,6 +161,17 @@ define(function(require) {
 		// handle collisions for player and aliens
 		this.game.physics.arcade.collide(player, aliens, this.playerVsAliens, null, this);
 
+		// handle collisions for bullets and aliens, if a bullet has been fired
+		if(this.bullet) {
+			this.game.physics.arcade.collide(this.bullet, aliens, this.bulletsVsAliens, null, this);
+
+			if(this.destroyBullet) {
+				this.bullet.destroy();
+				this.bullet = null;
+				this.destroyBullet = false;
+			}
+		}
+
 		var hasActivated = false;
 
 		// check for activate inside labs and aliens in labs
@@ -167,6 +185,7 @@ define(function(require) {
 						hasActivated = true;
 					}
 					else if(!lab.isCivilian()) {
+						player.stop();
 						lab.activate(this, player);
 						hasActivated = true;
 					}
@@ -193,7 +212,11 @@ define(function(require) {
 
 		// a useful activate hasn't happened so fire
 		if(!player.isDead() && activate.isDown && !hasActivated) {
-			console.log("FIRE!");
+			var bullet = player.fire();
+
+			if(bullet) {
+				this.bullet = bullet;
+			}
 		}
 
 		// TODO bugs vs aliens
@@ -222,7 +245,6 @@ define(function(require) {
 	GamePlay.prototype.playersVsCollectable = function(player, inventoryItem) {
 		if(player.addInventoryItem(inventoryItem)) {
 			collectables.removeChild(inventoryItem);
-			inventory.addInventoryItem(inventoryItem.key);
 		}
 	};
 
@@ -232,6 +254,16 @@ define(function(require) {
 			player.data.toughness -= alien.data.strength;
 
 			attackTimer = this.game.time.now + 500;
+		}
+	};
+
+	GamePlay.prototype.bulletsVsAliens = function(bullet, alien) {
+		alien.data.toughness -= bullet.data.damage;
+
+		this.destroyBullet = true;
+
+		if(alien.data.toughness <= 0) {
+			alien.destroy();
 		}
 	};
 

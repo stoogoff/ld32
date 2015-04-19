@@ -31,7 +31,6 @@ define(function(require) {
 		this.x = x;
 		this.y = y;
 		this.grid = 0;
-
 		this.childX = 0;
 		this.childY = 0;
 	};
@@ -53,9 +52,19 @@ define(function(require) {
 		}
 	};
 
-	Inventory.prototype.removeInventoryItem = function(image) {
-		// TODO remove inventory item
-	};
+	Inventory.prototype.updateInventory = function(inventory) {
+		// destroy everything!
+		this.removeAll();
 
+		this.grid = 0;
+		this.childX = 0;
+		this.childY = 0;
+
+		// add it all again
+		inventory.forEach(function(item) {
+			this.addInventoryItem(item.image);
+		}.bind(this));
+	}
+;
 	return Inventory;
 });

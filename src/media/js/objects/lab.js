@@ -59,10 +59,18 @@ define(function(require) {
 	};
 
 	Lab.prototype.onOverlayComplete = function(selected) {
-		// TODO stuff with selected
-		// either build a weapon and assign it to the player
-		// or create a bug
-		console.log(selected);
+		// build weapon or bugs
+		if(this.isChemical()) {
+			this.player.createWeapon(selected);
+		}
+		else {
+			// TODO add bugs!
+		}
+
+		// remove items from inventory
+		selected.forEach(function(inventoryItem) {
+			this.player.removeInventoryItem(inventoryItem);
+		}.bind(this));
 
 		this.owner.activeOverlay = false;
 		this.overlay.destroy();

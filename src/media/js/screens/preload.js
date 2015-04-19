@@ -11,6 +11,7 @@ define(function(require) {
 			// load graphics
 			var keys = [
 				"background", "cave",
+				"bullet", "spray", "cloud",
 				"lab-atomic", "lab-biological", "lab-chemical", "lab-civilian",
 				"weapon-gun", "weapon-bomb", "weapon-spray",
 				"flask-blue", "flask-green", "flask-orange", "flask-pink", "flask-purple", "flask-red",
